@@ -2,6 +2,8 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ToledoEM/emeansR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ToledoEM/emeansR/actions/workflows/R-CMD-check.yaml)
+[![test-coverage.yaml](https://github.com/ToledoEM/emeansR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/ToledoEM/emeansR/actions/workflows/test-coverage.yaml)
+[![pkgdown](https://github.com/ToledoEM/emeansR/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/ToledoEM/emeansR/actions/workflows/pkgdown.yaml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ToledoEM/emeansR/blob/main/LICENSE)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
