@@ -89,3 +89,30 @@ test_that("input validation", {
   expect_error(emeans_accumulate(s, matrix(rnorm(40), 20)), "batch overflow")
   expect_error(emeans_update(s), "expects a batch")
 })
+
+test_that("print shows fractional epochs", {
+  fit <- emeans(blobs(2000, 4, 5), 5, nepochs = 0.4, n_threads = 1)
+  expect_output(print(fit), "Epochs: 0.4 ")
+})
+
+test_that("fitted needs cluster labels", {
+  x <- blobs(200, 2, 3)
+  s <- emeans_stream(nrow(x), x[1:3, ], nepochs = 1, batch_size = 200, n_threads = 1)
+  emeans_accumulate(s, x)
+  emeans_update(s)
+  emeans_end_epoch(s)
+  expect_error(fitted(emeans_finalize(s)), "use predict")
+})
+
+test_that("emeans_stream validates n", {
+  init <- matrix(rnorm(6), 3)
+  expect_error(emeans_stream(10.5, init), "whole number")
+  expect_error(emeans_stream(-1, init), "whole number")
+  expect_error(emeans_stream(c(10, 20), init), "whole number")
+})
+
+test_that("fractional max_points_per_centroid truncates", {
+  x <- blobs(5000, 4, 5)
+  fit <- emeans(x, 5, max_points_per_centroid = 100.7, final_assign = FALSE, n_threads = 1)
+  expect_equal(sum(!is.na(fit$cluster)), 500)
+})
