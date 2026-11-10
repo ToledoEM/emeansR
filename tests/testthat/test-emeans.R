@@ -116,3 +116,40 @@ test_that("fractional max_points_per_centroid truncates", {
   fit <- emeans(x, 5, max_points_per_centroid = 100.7, final_assign = FALSE, n_threads = 1)
   expect_equal(sum(!is.na(fit$cluster)), 500)
 })
+
+test_that("withinss and predict distances are exact far from the origin", {
+  set.seed(1)
+  x <- matrix(rnorm(20000 * 4), ncol = 4) + 1e6
+  for (prec in c("double", "single")) {
+    fit <- emeans(x, 8, precision = prec, n_threads = 1)
+    exact <- rowSums((x - fit$centers[fit$cluster, ])^2)
+    want <- as.vector(tapply(exact, factor(fit$cluster, 1:8), sum))
+    want[is.na(want)] <- 0
+    expect_equal(fit$withinss, want, tolerance = 1e-8)
+    p <- predict(fit, x[1:200, ], distance = TRUE)
+    expect_equal(p$distance, unname(exact[1:200]), tolerance = 1e-8)
+  }
+})
+
+test_that("alpha0 = 1 (replace path) matches the reference", {
+  x <- blobs(1200, 3, 4)
+  init <- x[1:4, ]
+  recipe <- emeans_recipe(nrow(x), 4, 3, nepochs = 2, batch_size = 100, alpha0 = 1, unused_threshold = 0)
+  set.seed(5)
+  orders <- lapply(seq_along(recipe$epoch_rows), function(e) sample(nrow(x)))
+  want <- reference_emeans(x, init, recipe, orders)
+  got <- run_stream(x, init, orders, nepochs = 2, batch_size = 100, alpha0 = 1, unused_threshold = 0)
+  expect_equal(unname(got$centers), unname(want), tolerance = 1e-10)
+})
+
+test_that("nepochs too small to train errors", {
+  expect_error(emeans_recipe(1000, 10, 5, nepochs = 1e-4), "nepochs too small")
+})
+
+test_that("spherical stream warns once on non-unit chunks", {
+  x <- blobs(400, 3, 2)
+  xs <- x / sqrt(rowSums(x^2))
+  s <- emeans_stream(400, xs[1:2, ], nepochs = 1, batch_size = 100, spherical = TRUE, n_threads = 1)
+  expect_warning(emeans_accumulate(s, x[1:50, ]), "unit-norm")
+  expect_no_warning(emeans_accumulate(s, x[51:100, ]))
+})
