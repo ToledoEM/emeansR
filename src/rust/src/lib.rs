@@ -243,6 +243,18 @@ fn em_assign(centers: RMatrix<f64>, x: RMatrix<f64>, spherical: bool, single: bo
     }
     if single {
         run::<f32>(&c, k, d, spherical, &x, &mut labels, &mut dist, pool.as_ref());
+        if !spherical {
+            // Exact distances from f64 input
+            let src = x.data();
+            dist.iter_mut().for_each(|v| *v = 0.0);
+            for j in 0..d {
+                let col = &src[j * n..(j + 1) * n];
+                for (i, &v) in col.iter().enumerate() {
+                    let t = v - c[labels[i] as usize * d + j];
+                    dist[i] += t * t;
+                }
+            }
+        }
     } else {
         run::<f64>(&c, k, d, spherical, &x, &mut labels, &mut dist, pool.as_ref());
     }

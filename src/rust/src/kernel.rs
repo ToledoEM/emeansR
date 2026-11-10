@@ -195,11 +195,24 @@ fn assign_chunk<T: Float>(
         dist[i] = if snap.spherical {
             2.0 * s.best[i]
         } else {
+            // Direct distance, no cancellation
             let xr = &block[i * d..(i + 1) * d];
-            let xn: f64 = xr.iter().map(|v| { let v = v.to_f64(); v * v }).sum();
-            (xn + s.best[i]).max(0.0)
+            let l = labels[i] as usize;
+            sq_dist(xr, &snap.c[l * d..(l + 1) * d])
         };
     }
+}
+
+/// Squared Euclidean distance, f64 sum.
+#[inline]
+fn sq_dist<T: Float>(a: &[T], b: &[T]) -> f64 {
+    a.iter()
+        .zip(b)
+        .map(|(&u, &v)| {
+            let t = u.to_f64() - v.to_f64();
+            t * t
+        })
+        .sum()
 }
 
 /// Assign all rows. `labels` and `dist` must have `rows.len()` entries.
