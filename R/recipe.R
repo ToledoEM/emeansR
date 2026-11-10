@@ -103,6 +103,7 @@ emeans_recipe <- function(n, k, d, nepochs = 5,
   # Rows and steps per epoch
   rows <- epoch_rows(n, nepochs)
   steps <- ceiling(rows / batch_size)
+  if (sum(steps) == 0) stop("nepochs too small: no rows to train on", call. = FALSE)
   list(
     batch_size = batch_size,
     alpha0 = as.numeric(alpha0),

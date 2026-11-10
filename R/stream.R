@@ -57,6 +57,7 @@ emeans_stream <- function(n, init, nepochs = 5,
   s$spherical <- spherical
   s$precision <- precision
   s$colnames <- colnames(init)
+  s$unit_checked <- FALSE
   class(s) <- "emeans_stream"
   s
 }
@@ -88,6 +89,11 @@ emeans_accumulate <- function(s, chunk) {
   if (info$pending + nrow(chunk) > info$expected_batch) {
     stop(sprintf("batch overflow: update expects %d rows, got %d",
                  as.integer(info$expected_batch), as.integer(info$pending + nrow(chunk))), call. = FALSE)
+  }
+  # Warn once on non-unit rows
+  if (s$spherical && !s$unit_checked) {
+    s$unit_checked <- TRUE
+    check_unit_rows(chunk)
   }
   invisible(em_accumulate(s$ptr, chunk))
 }
