@@ -1,0 +1,34 @@
+url: https://toledoem.github.io/emeansR/
+destination: docs/
+
+template:
+  bootstrap: 5
+
+navbar:
+  title: emeansR
+  left:
+    - text: Home
+      href: index.html
+    - text: Reference
+      href: reference/index.html
+    - text: Articles
+      href: articles/index.html
+
+reference:
+  - title: Clustering
+    contents:
+      - emeans
+      - predict.emeans
+      - emeans_recipe
+  - title: Streaming
+    contents:
+      - emeans_stream
+  - title: Package
+    contents:
+      - emeansR-package
+
+articles:
+  - title: Articles
+    contents:
+      - emeans-vs-lloyd
+      - articles/benchmark
