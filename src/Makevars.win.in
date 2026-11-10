@@ -1,0 +1,27 @@
+# Generated into src/Makevars.win by ./configure.win.
+TARGET = x86_64-pc-windows-gnu
+TARGET_DIR = $(CURDIR)/rust/target
+LIBDIR = $(TARGET_DIR)/$(TARGET)/release
+STATLIB = $(LIBDIR)/libemeansr.a
+PKG_LIBS = -L$(LIBDIR) -lemeansr -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
+
+VENDOR_DIR = $(CURDIR)/rust/vendor
+CARGO_TMP = $(CURDIR)/.cargo
+
+all: $(SHLIB) rust_clean
+
+$(SHLIB): $(STATLIB)
+
+rust_clean: $(SHLIB)
+	rm -Rf "$(STATLIB)" "$(CARGO_TMP)" "$(VENDOR_DIR)"
+
+$(STATLIB):
+	if [ ! -d "$(VENDOR_DIR)" ]; then (cd rust && tar -xJf vendor.tar.xz); fi
+	mkdir -p "$(CARGO_TMP)"
+	sed 's|^directory = .*|directory = "$(VENDOR_DIR)"|' rust/vendor-config.toml > "$(CARGO_TMP)/config.toml"
+	export CARGO_HOME="$(CARGO_TMP)" && export PATH="@RUST_BIN_DIR@:$(PATH)" && \
+	  export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CC)" && \
+	  "@CARGO@" build -j 2 --offline --locked --lib --release --target $(TARGET) \
+	    --manifest-path=./rust/Cargo.toml --target-dir "$(TARGET_DIR)"
+
+.PHONY: $(STATLIB)

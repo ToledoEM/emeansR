@@ -1,0 +1,29 @@
+# Generated into src/Makevars by ./configure.
+TARGET_DIR = $(CURDIR)/rust/target
+LIBDIR = $(TARGET_DIR)/release
+STATLIB = $(LIBDIR)/libemeansr.a
+PKG_LIBS = -L$(LIBDIR) -lemeansr
+
+VENDOR_DIR = $(CURDIR)/rust/vendor
+# Cargo state lives in the build tree, never in the user's ~/.cargo.
+CARGO_TMP = $(CURDIR)/.cargo
+
+all: $(SHLIB) rust_clean
+
+$(SHLIB): $(STATLIB)
+
+# Once linked, drop the static library and build scratch: R's compiled-code
+# check inspects objects left in src/ (std's abort/panic paths live there).
+# target/ stays so a reinstall from a source tree only relinks.
+rust_clean: $(SHLIB)
+	rm -Rf "$(STATLIB)" "$(CARGO_TMP)" "$(VENDOR_DIR)"
+
+$(STATLIB):
+	if [ ! -d "$(VENDOR_DIR)" ]; then (cd rust && tar -xJf vendor.tar.xz); fi
+	mkdir -p "$(CARGO_TMP)"
+	sed 's|^directory = .*|directory = "$(VENDOR_DIR)"|' rust/vendor-config.toml > "$(CARGO_TMP)/config.toml"
+	export CARGO_HOME="$(CARGO_TMP)" && export PATH="@RUST_BIN_DIR@:$(PATH)" && \
+	  "@CARGO@" build -j 2 --offline --locked --lib --release \
+	    --manifest-path=./rust/Cargo.toml --target-dir "$(TARGET_DIR)"
+
+.PHONY: $(STATLIB)
