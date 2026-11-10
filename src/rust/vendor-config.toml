@@ -2,4 +2,5 @@
 replace-with = "vendored-sources"
 
 [source.vendored-sources]
-directory = "vendor"
+# Relative to src/, the parent of the CARGO_HOME (.cargo) folder.
+directory = "rust/vendor"

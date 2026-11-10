@@ -18,7 +18,7 @@ rust_clean: $(SHLIB)
 $(STATLIB):
 	if [ ! -d "$(VENDOR_DIR)" ]; then (cd rust && tar -xJf vendor.tar.xz); fi
 	mkdir -p "$(CARGO_TMP)"
-	sed 's|^directory = .*|directory = "$(VENDOR_DIR)"|' rust/vendor-config.toml > "$(CARGO_TMP)/config.toml"
+	cp rust/vendor-config.toml "$(CARGO_TMP)/config.toml"
 	export CARGO_HOME="$(CARGO_TMP)" && export PATH="@RUST_BIN_DIR@:$(PATH)" && \
 	  export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CC)" && \
 	  "@CARGO@" build -j 2 --offline --locked --lib --release --target $(TARGET) \
