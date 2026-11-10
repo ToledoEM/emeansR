@@ -1,5 +1,12 @@
 # Generated into src/Makevars.win by ./configure.win.
+# R for Windows on ARM sets R_ARCH to /aarch64 and links with LLVM.
+ifeq "$(R_ARCH)" "/aarch64"
+TARGET = aarch64-pc-windows-gnullvm
+LINKER_VAR = CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER
+else
 TARGET = x86_64-pc-windows-gnu
+LINKER_VAR = CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER
+endif
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/release
 STATLIB = $(LIBDIR)/libemeansr.a
@@ -20,7 +27,7 @@ $(STATLIB):
 	mkdir -p "$(CARGO_TMP)"
 	cp rust/vendor-config.toml "$(CARGO_TMP)/config.toml"
 	export CARGO_HOME="$(CARGO_TMP)" && export PATH="@RUST_BIN_DIR@:$(PATH)" && \
-	  export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CC)" && \
+	  export $(LINKER_VAR)="$(CC)" && \
 	  "@CARGO@" build -j 2 --offline --locked --lib --release --target $(TARGET) \
 	    --manifest-path=./rust/Cargo.toml --target-dir "$(TARGET_DIR)"
 

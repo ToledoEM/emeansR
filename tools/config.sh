@@ -37,6 +37,7 @@ Install them with your system package manager, for example:
   macOS:          brew install rust
 or from https://rustup.rs/ , then reinstall emeansR.
 On Windows also run: rustup target add x86_64-pc-windows-gnu
+(aarch64-pc-windows-gnullvm for R on Windows ARM)
 -----------------------------------------------------------------------------
 MSG
   exit 1
