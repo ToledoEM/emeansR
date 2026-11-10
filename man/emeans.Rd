@@ -62,7 +62,8 @@ are \code{NA}.}
 Does not touch R's random number generator.}
 
 \item{n_threads}{Threads for assignment. Defaults to
-\code{getOption("emeansR.threads")}, else physical cores minus one.}
+\code{getOption("emeansR.threads")}, else physical cores minus one (at most
+two when the \verb{_R_CHECK_LIMIT_CORES_} environment variable is set).}
 
 \item{verbose}{Print the recipe and per-epoch objective.}
 }

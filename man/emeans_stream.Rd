@@ -65,7 +65,8 @@ the same limit at offsets around 1e8.}
 Does not touch R's random number generator.}
 
 \item{n_threads}{Threads for assignment. Defaults to
-\code{getOption("emeansR.threads")}, else physical cores minus one.}
+\code{getOption("emeansR.threads")}, else physical cores minus one (at most
+two when the \verb{_R_CHECK_LIMIT_CORES_} environment variable is set).}
 
 \item{s}{An \code{emeans_stream} object.}
 
