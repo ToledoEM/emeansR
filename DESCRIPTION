@@ -1,0 +1,41 @@
+Package: emeansR
+Title: Mini-Batch k-Means Clustering with Exponential Moving Averages
+Version: 0.1.0
+Authors@R: c(
+    person("Enrique", "Toledo", email = "enriquetoledo@gmail.com", role = c("aut", "cre")),
+    person("Authors of the bundled Rust crates", role = c("ctb", "cph"),
+           comment = "see inst/AUTHORS")
+    )
+Description: An R implementation of e-means (Bessa et al., 2026, <doi:10.48550/arXiv.2611.09501>),
+    a mini-batch replacement for Lloyd's k-means that updates centroids with an
+    exponential moving average and sets batch size and step size from fitted
+    scaling laws. Reaches a lower loss than 25 Lloyd iterations in a few epochs.
+    The compute core is written in Rust.
+License: MIT + file LICENSE
+URL: https://toledoem.github.io/emeansR/, https://github.com/ToledoEM/emeansR
+BugReports: https://github.com/ToledoEM/emeansR/issues
+Copyright: The bundled Rust crates in src/rust/vendor.tar.xz are copyright
+    their respective authors; see inst/AUTHORS.
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.71
+Depends:
+    R (>= 4.1.0)
+Imports:
+    parallel,
+    stats,
+    utils
+Suggests:
+    dplyr,
+    ggplot2,
+    knitr,
+    purrr (>= 1.0.0),
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tibble,
+    tidyr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/rextendr/version: 0.4.0
+Config/roxygen2/version: 8.1.1

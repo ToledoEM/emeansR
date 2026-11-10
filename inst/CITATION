@@ -1,0 +1,19 @@
+bibentry(
+  bibtype = "Misc",
+  title = "e-means: outperforming k-means (in one-tenth the epochs)",
+  author = c(
+    person("Swann", "Bessa"), person("Pierre-Emmanuel", "Mazaré"),
+    person("Gergely", "Szilvasy"), person("Hugo", "Touvron"),
+    person("David", "Picard"), person("Matthijs", "Douze"),
+    person("Hervé", "Jégou")
+  ),
+  year = "2026",
+  eprint = "2611.09501",
+  archivePrefix = "arXiv",
+  primaryClass = "cs.LG",
+  url = "https://arxiv.org/abs/2611.09501",
+  textVersion = paste(
+    "Bessa S, Mazaré P-E, Szilvasy G, Touvron H, Picard D, Douze M, Jégou H (2026).",
+    "e-means: outperforming k-means (in one-tenth the epochs). arXiv:2611.09501."
+  )
+)
