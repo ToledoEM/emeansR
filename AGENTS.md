@@ -56,14 +56,14 @@ After changing `src/rust/Cargo.toml`, re-vendor with `sh .dev/vendor-update.sh` 
 
 ## Code style
 
-- R: lintr defaults with 120-character lines (`.github/.lintr`). CI fails on any lint, so `lintr::lint_package()` must report none; run it with the current build installed, or it flags new Rust entry points as undefined. Paths in the `.lintr` exclusions are relative to `.github/`. Base R only at runtime; Imports are `parallel`, `stats`, `utils`.
-- Rust: `cargo clippy` clean except style lints. Centroids, masses and statistics accumulate in f64; only distance computation uses f32 when `precision = "single"`.
+- R: lintr defaults with 120-character lines (`.github/.lintr`). CI fails on any lint, so `lintr::lint_package()` must report none; run it with the current build installed, or it flags new Rust entry points as undefined. Reinstall from the working tree before any test, lint or benchmark run; an older installed copy silently tests old code. Paths in the `.lintr` exclusions are relative to `.github/`. Base R only at runtime; Imports are `parallel`, `stats`, `utils`.
+- Rust: `cargo clippy` clean except style lints. With `precision = "single"` the training data are stored and distances computed in f32; batch statistics, centroids and masses accumulate in f64. Reported distances (`withinss`, `predict(distance = TRUE)`) are direct squared differences, never the expanded `‖x‖² + ‖c‖² − 2x·c`, which cancels on data far from the origin. Single-precision assignment still degrades on uncentred data, as in faiss's FP32 path; this is documented, not fixed.
 - The package never touches R's RNG. All randomness comes from `seed` through `rng.rs`.
 - Labels are 0-based in Rust and 1-based in R.
 
 ## Testing instructions
 
-- `tests/testthat/helper-reference.R` holds a slow pure-R e-means (no revival) used as an oracle. The streaming test compares it to the Rust path with tolerance 1e-10. Keep that test passing after any change to `state.rs`.
+- `tests/testthat/helper-reference.R` holds a slow pure-R e-means (no revival) used as an oracle. The streaming test compares it to the Rust path with tolerance 1e-10. Keep that test passing after any change to `state.rs`. It also covers the `alpha == 1` replace path. Revival has only a smoke test: an exact oracle would need the xoshiro256** stream in R.
 - `test-recipe.R` pins values produced by faiss `_resolve_recipe`. Do not edit those numbers to make a test pass. If the recipe changes, re-derive them from faiss.
 - `.dev/xcheck/` holds the cross-check against faiss `NumpyEmeans` (run with `uv run --with faiss-cpu --with numpy python -I`).
 - Tests and examples must use `n_threads = 1` or `2`.

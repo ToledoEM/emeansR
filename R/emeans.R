@@ -54,9 +54,14 @@ check_unit_rows <- function(x) {
 #'   must already be unit-norm; centers are returned as unit vectors.
 #' @param max_points_per_centroid If set and `nrow(x) > max_points_per_centroid * k`,
 #'   train on a random subset of that many rows (as `faiss.Kmeans`).
-#' @param precision `"double"`, or `"single"` for float32 distance
-#'   computation (about 2x faster, half the memory). Centroids and statistics
-#'   are always accumulated in double precision.
+#' @param precision `"double"`, or `"single"` to store the training data and
+#'   compute distances in float32 (about 2x faster, half the memory). Batch
+#'   statistics, centroids and masses always accumulate in double precision,
+#'   and `withinss` is computed from the original data. As in the faiss FP32
+#'   path, single precision assigns poorly when the data sit far from the
+#'   origin (the error grows with the squared norm of the rows); centre the
+#'   data first, e.g. with `scale(x, scale = FALSE)`. Double precision hits
+#'   the same limit at offsets around 1e8.
 #' @param final_assign If `TRUE` (default), assign every row of `x` to the
 #'   final centers, so `cluster`, `withinss` and `size` describe the returned
 #'   centers (as [stats::kmeans()]). If `FALSE`, `cluster` holds labels from
@@ -239,7 +244,9 @@ print.emeans <- function(x, ...) {
 #' @param object An `emeans` fit.
 #' @param newdata Numeric matrix or data frame with the same columns.
 #' @param distance If `TRUE`, return a data frame with `cluster` and
-#'   `distance` (squared Euclidean; cosine similarity when spherical).
+#'   `distance`: the squared Euclidean distance, or, when spherical, the
+#'   inner product with the unit centers (the cosine similarity if `newdata`
+#'   rows are unit-norm).
 #' @param n_threads Threads; see [emeans()].
 #' @param ... Unused.
 #' @return Integer cluster labels, or a data frame when `distance = TRUE`.

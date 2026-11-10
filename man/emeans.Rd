@@ -43,9 +43,14 @@ must already be unit-norm; centers are returned as unit vectors.}
 \item{max_points_per_centroid}{If set and \code{nrow(x) > max_points_per_centroid * k},
 train on a random subset of that many rows (as \code{faiss.Kmeans}).}
 
-\item{precision}{\code{"double"}, or \code{"single"} for float32 distance
-computation (about 2x faster, half the memory). Centroids and statistics
-are always accumulated in double precision.}
+\item{precision}{\code{"double"}, or \code{"single"} to store the training data and
+compute distances in float32 (about 2x faster, half the memory). Batch
+statistics, centroids and masses always accumulate in double precision,
+and \code{withinss} is computed from the original data. As in the faiss FP32
+path, single precision assigns poorly when the data sit far from the
+origin (the error grows with the squared norm of the rows); centre the
+data first, e.g. with \code{scale(x, scale = FALSE)}. Double precision hits
+the same limit at offsets around 1e8.}
 
 \item{final_assign}{If \code{TRUE} (default), assign every row of \code{x} to the
 final centers, so \code{cluster}, \code{withinss} and \code{size} describe the returned

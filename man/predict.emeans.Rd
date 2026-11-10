@@ -12,7 +12,9 @@
 \item{newdata}{Numeric matrix or data frame with the same columns.}
 
 \item{distance}{If \code{TRUE}, return a data frame with \code{cluster} and
-\code{distance} (squared Euclidean; cosine similarity when spherical).}
+\code{distance}: the squared Euclidean distance, or, when spherical, the
+inner product with the unit centers (the cosine similarity if \code{newdata}
+rows are unit-norm).}
 
 \item{n_threads}{Threads; see \code{\link[=emeans]{emeans()}}.}
 

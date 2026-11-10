@@ -52,9 +52,14 @@ must already be unit-norm; centers are returned as unit vectors.}
 \item{unused_threshold}{Revival threshold tau: clusters with mass below
 \code{tau * mean(mass)} are revived. \code{NULL} gives 0.1, or 0 (off) when \code{d <= 2}.}
 
-\item{precision}{\code{"double"}, or \code{"single"} for float32 distance
-computation (about 2x faster, half the memory). Centroids and statistics
-are always accumulated in double precision.}
+\item{precision}{\code{"double"}, or \code{"single"} to store the training data and
+compute distances in float32 (about 2x faster, half the memory). Batch
+statistics, centroids and masses always accumulate in double precision,
+and \code{withinss} is computed from the original data. As in the faiss FP32
+path, single precision assigns poorly when the data sit far from the
+origin (the error grows with the squared norm of the rows); centre the
+data first, e.g. with \code{scale(x, scale = FALSE)}. Double precision hits
+the same limit at offsets around 1e8.}
 
 \item{seed}{Integer seed for initialization, shuffling and revival.
 Does not touch R's random number generator.}
