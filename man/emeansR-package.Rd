@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-An R implementation of e-means (Bessa et al., 2026, \doi{10.48550/arXiv.2611.09501}), a mini-batch replacement for Lloyd's k-means that updates centroids with an exponential moving average and sets batch size and step size from fitted scaling laws. Reaches a lower loss than 25 Lloyd iterations in a few epochs. The compute core is written in Rust.
+Implements e-means (Bessa et al. (2026) \doi{10.48550/arXiv.2611.09501}), a mini-batch replacement for Lloyd's k-means that updates centroids with an exponential moving average and sets batch size and step size from fitted scaling laws, following the reference 'faiss' implementation. Reaches a lower loss than 25 Lloyd iterations in a few epochs. The compute core is written in 'Rust'.
 }
 \seealso{
 Useful links:

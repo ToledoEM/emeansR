@@ -153,3 +153,73 @@ test_that("spherical stream warns once on non-unit chunks", {
   expect_warning(emeans_accumulate(s, x[1:50, ]), "unit-norm")
   expect_no_warning(emeans_accumulate(s, x[51:100, ]))
 })
+
+test_that("emeans validates its inputs", {
+  x <- blobs(300, 3, 3)
+  expect_error(emeans(x, x[1:3, 1:2], n_threads = 1), "must have 3 columns")
+  expect_error(emeans(x, 0, n_threads = 1), "positive integer")
+  expect_error(emeans(x, NA, n_threads = 1), "positive integer")
+  expect_error(emeans(x[1:2, ], 3, n_threads = 1), "more clusters than rows")
+  expect_error(emeans(x, 3, max_points_per_centroid = 0.5, n_threads = 1), ">= 1")
+})
+
+test_that("emeans takes data frames and returns fitted centers", {
+  x <- blobs(600, 3, 3)
+  fit <- emeans(as.data.frame(x), 3, nepochs = 2, n_threads = 1)
+  expect_equal(fit$cluster, emeans(x, 3, nepochs = 2, n_threads = 1)$cluster)
+  expect_equal(unname(fitted(fit)), unname(fit$centers[fit$cluster, ]))
+  expect_equal(fitted(fit, "classes"), fit$cluster)
+})
+
+test_that("verbose reports sampling, recipe and epochs", {
+  x <- blobs(2000, 3, 4)
+  msgs <- character()
+  withCallingHandlers(
+    emeans(x, 4, nepochs = 2, max_points_per_centroid = 100, verbose = TRUE, n_threads = 1),
+    message = function(m) {
+      msgs <<- c(msgs, conditionMessage(m))
+      invokeRestart("muffleMessage")
+    }
+  )
+  expect_match(msgs, "Sampling 400 of 2000", all = FALSE)
+  expect_match(msgs, "Clustering 400 points", all = FALSE)
+  expect_match(msgs, "Epoch 2 / 2", all = FALSE)
+})
+
+test_that("thread defaults follow the option and the CRAN check limit", {
+  old <- options(emeansR.threads = 3)
+  on.exit(options(old), add = TRUE)
+  expect_equal(default_threads(NULL), 3L)
+  expect_equal(default_threads(5), 5L)
+  options(emeansR.threads = NULL)
+  prev <- Sys.getenv("_R_CHECK_LIMIT_CORES_", NA)
+  on.exit(if (is.na(prev)) Sys.unsetenv("_R_CHECK_LIMIT_CORES_") else Sys.setenv(`_R_CHECK_LIMIT_CORES_` = prev),
+          add = TRUE)
+  Sys.setenv(`_R_CHECK_LIMIT_CORES_` = "TRUE")
+  expect_lte(default_threads(NULL), 2L)
+})
+
+test_that("explicit batch laws resolve", {
+  q <- emeans_recipe(1e5, 64, 32, nepochs = 3, batch_law = "quality")
+  t <- emeans_recipe(1e5, 64, 32, nepochs = 3, batch_law = "throughput")
+  expect_equal(q$batch_law, "quality")
+  expect_equal(t$batch_law, "throughput")
+})
+
+test_that("stream calls out of order fail with R errors", {
+  x <- blobs(200, 2, 3)
+  expect_error(emeans_stream(2, x[1:3, ], n_threads = 1), "more clusters than rows")
+  s <- emeans_stream(nrow(x), x[1:3, ], nepochs = 1, batch_size = 200, n_threads = 1)
+  expect_output(print(s), "epoch 0 / 1")
+  expect_error(emeans_accumulate(s, x[, 1, drop = FALSE]), "chunk has 1 columns, model has 2")
+  expect_error(emeans_end_epoch(s), "epoch 1 expects 200 rows, updated 0")
+  expect_error(emeans_finalize(s), "finalize needs all 1 epochs")
+  emeans_accumulate(s, x)
+  emeans_update(s)
+  emeans_end_epoch(s)
+  expect_error(emeans_update(s), "all epochs are complete")
+  res <- emeans_finalize(s)
+  expect_output(print(res), "3 clusters in 2D, 1 epochs")
+  expect_output(print(s), "\\(finalized\\)")
+  expect_error(emeans_update(s), "already finalized")
+})

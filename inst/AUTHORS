@@ -7,37 +7,37 @@ autocfg 1.5.1
   Source: https://github.com/cuviper/autocfg
 
 crossbeam-deque 0.8.8
-  Authors: see crate repository
+  Authors: The Crossbeam Project Developers
   License: MIT OR Apache-2.0
   Source: https://github.com/crossbeam-rs/crossbeam
 
 crossbeam-epoch 0.9.21
-  Authors: see crate repository
+  Authors: The Crossbeam Project Developers
   License: MIT OR Apache-2.0
   Source: https://github.com/crossbeam-rs/crossbeam
 
 crossbeam-utils 0.8.23
-  Authors: see crate repository
+  Authors: The Crossbeam Project Developers
   License: MIT OR Apache-2.0
   Source: https://github.com/crossbeam-rs/crossbeam
 
 either 1.19.0
-  Authors: see crate repository
+  Authors: bluss (Ulrik Sverdrup) and the either contributors
   License: MIT OR Apache-2.0
   Source: https://github.com/rayon-rs/either
 
 extendr-api 0.9.0
-  Authors: see crate repository
+  Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
   License: MIT
   Source: https://github.com/extendr/extendr
 
 extendr-ffi 0.9.0
-  Authors: see crate repository
+  Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
   License: MIT
   Source: https://github.com/extendr/extendr
 
 extendr-macros 0.9.0
-  Authors: see crate repository
+  Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
   License: MIT
   Source: https://github.com/extendr/extendr
 

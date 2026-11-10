@@ -17,7 +17,11 @@ default_threads <- function(n_threads) {
   if (!is.null(n_threads)) return(max(1L, as.integer(n_threads)))
   opt <- getOption("emeansR.threads")
   if (!is.null(opt)) return(max(1L, as.integer(opt)))
-  max(1L, parallel::detectCores(logical = FALSE) - 1L, na.rm = TRUE)
+  cores <- max(1L, parallel::detectCores(logical = FALSE) - 1L, na.rm = TRUE)
+  # R CMD check --as-cran sets this; CRAN allows at most two cores.
+  limit <- tolower(Sys.getenv("_R_CHECK_LIMIT_CORES_", ""))
+  if (nzchar(limit) && limit != "false") cores <- min(cores, 2L)
+  cores
 }
 
 # Warn on non-unit rows
@@ -70,7 +74,8 @@ check_unit_rows <- function(x) {
 #' @param seed Integer seed for initialization, shuffling and revival.
 #'   Does not touch R's random number generator.
 #' @param n_threads Threads for assignment. Defaults to
-#'   `getOption("emeansR.threads")`, else physical cores minus one.
+#'   `getOption("emeansR.threads")`, else physical cores minus one (at most
+#'   two when the `_R_CHECK_LIMIT_CORES_` environment variable is set).
 #' @param verbose Print the recipe and per-epoch objective.
 #' @return An object of class `c("emeans", "kmeans")` with components
 #'   `cluster`, `centers`, `totss`, `withinss`, `tot.withinss`, `betweenss`,
