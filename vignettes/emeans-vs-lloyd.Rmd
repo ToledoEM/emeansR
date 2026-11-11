@@ -9,7 +9,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
-options(emeansR.threads = 2)
+old_options <- options(emeansR.threads = 2)
 ```
 
 This article is an R port of the authors'
@@ -241,6 +241,17 @@ cluster revival off at `d <= 2`. The same race at `D = 2`:
 run_races(2) |>
   select(distribution, lloyd_loss, emeans_loss, emeans_vs_lloyd) |>
   knitr::kable(digits = 4)
+```
+
+## More articles
+
+The package website has two articles that need data or packages not shipped with the package:
+
+- [Benchmark](https://toledoem.github.io/emeansR/articles/benchmark.html): time and quality against `kmeans()`, `hclust()` and `Mclust()`.
+- [A resolution tree for single-cell data](https://toledoem.github.io/emeansR/articles/single-cell.html): a recursive e-means tree on 73,042 cells, compared with Seurat's Louvain clustering.
+
+```{r restore-options, include = FALSE}
+options(old_options)
 ```
 
 ## Reference
