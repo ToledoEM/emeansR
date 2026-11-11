@@ -56,6 +56,34 @@ Median time to a `k`-cluster partition for `emeans()`, `kmeans()`, `hclust()` an
 
 With 256 clusters, `emeans()` is 12 to 26 times faster than `kmeans()` (26 times at n = 500,000) at similar quality. With 20 well-separated clusters it is the fastest method, but `hclust()` and `Mclust()` find better partitions. The [benchmark article](https://toledoem.github.io/emeansR/articles/benchmark.html) has the quality results and caveats.
 
+## Single-cell data
+
+On 73,042 mouse cells from GEO [GSE233163](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE233163) (20 principal components, Apple M2, 7 cores for both methods), Seurat's neighbour graph plus Louvain at 14 resolutions took 84.5 s. `emeans()` at the same 14 cluster counts took 1.1 s, and a five-level bisecting tree (31 clusters) took 0.2 s.
+
+![Seconds per partition and for the whole sweep, Seurat Louvain against emeans, on 73,042 cells](man/figures/README-single-cell-time.png)
+
+The [single-cell article](https://toledoem.github.io/emeansR/articles/single-cell.html) builds the tree, checks its stability across seeds and compares it with Louvain and the authors' cell types.
+
+`emeans()` works on any cell embedding, so it fits a Seurat workflow after `RunPCA()`:
+
+
+### Seurat Integration with e-means
+
+```r
+library(Seurat)
+library(emeansR)
+
+obj <- NormalizeData(obj) |> FindVariableFeatures() |> ScaleData() |> RunPCA(npcs = 30)
+pcs <- Embeddings(obj, "pca")[, 1:20]
+
+fit <- emeans(pcs, k = 16, nepochs = 3, seed = 1)
+obj$emeans <- factor(fit$cluster)
+Idents(obj) <- "emeans"
+
+obj <- RunUMAP(obj, dims = 1:20)
+DimPlot(obj, group.by = "emeans")
+```
+
 ## Citation
 
 ```r
