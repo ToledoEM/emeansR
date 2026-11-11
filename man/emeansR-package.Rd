@@ -4,7 +4,7 @@
 \name{emeansR-package}
 \alias{emeansR}
 \alias{emeansR-package}
-\title{emeansR: Mini-Batch k-Means Clustering with Exponential Moving Averages}
+\title{emeansR: E-Means Clustering for Large Datasets}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

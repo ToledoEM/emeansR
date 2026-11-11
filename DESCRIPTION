@@ -1,5 +1,5 @@
 Package: emeansR
-Title: Mini-Batch k-Means Clustering with Exponential Moving Averages
+Title: E-Means Clustering for Large Datasets
 Version: 0.1.0
 Authors@R: c(
     person("Enrique", "Toledo", email = "enriquetoledo@gmail.com", role = c("aut", "cre")),
