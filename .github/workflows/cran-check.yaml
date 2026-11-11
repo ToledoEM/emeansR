@@ -1,0 +1,71 @@
+# Mirrors CRAN incoming checks: r-devel on Windows with win-builder's Rust,
+# r-devel on Linux, and the minimum supported Rust (1.71) on both systems.
+on:
+  push:
+    branches: [main, dev, stable]
+  pull_request:
+  workflow_dispatch:
+
+name: cran-check.yaml
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cran-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }}, Rust ${{ matrix.config.rust }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: 'devel',   rust: '1.92.0'}
+          - {os: windows-latest, r: 'release', rust: '1.71.0'}
+          - {os: ubuntu-latest,  r: 'devel',   rust: '1.71.0', http-user-agent: 'release'}
+          - {os: ubuntu-latest,  r: 'devel',   rust: 'stable', http-user-agent: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      NOT_CRAN: false
+      _R_CHECK_CRAN_INCOMING_: true
+      _R_CHECK_CRAN_INCOMING_REMOTE_: false
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: |
+          rustup toolchain install "${{ matrix.config.rust }}" --profile minimal
+          rustup default "${{ matrix.config.rust }}"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            rustup target add x86_64-pc-windows-gnu
+          fi
+          rustc --version
+          cargo --version
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+          cache-version: 1
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--no-manual", "--compact-vignettes=gs+qpdf")'
+          error-on: '"warning"'

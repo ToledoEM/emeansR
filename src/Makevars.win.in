@@ -24,10 +24,14 @@ rust_clean: $(SHLIB)
 
 $(STATLIB):
 	if [ ! -d "$(VENDOR_DIR)" ]; then (cd rust && tar -xJf vendor.tar.xz); fi
-	mkdir -p "$(CARGO_TMP)"
+	mkdir -p "$(CARGO_TMP)/libgcc_mock"
 	cp rust/vendor-config.toml "$(CARGO_TMP)/config.toml"
+	# rustc links Windows GNU targets with -lgcc_eh, which Rtools' gcc does not
+	# ship. An empty archive satisfies the linker (same workaround as rextendr).
+	touch "$(CARGO_TMP)/libgcc_mock/libgcc_eh.a"
 	export CARGO_HOME="$(CARGO_TMP)" && export PATH="@RUST_BIN_DIR@:$(PATH)" && \
-	  export $(LINKER_VAR)="$(CC)" && \
+	  export LIBRARY_PATH="$${LIBRARY_PATH};$(CARGO_TMP)/libgcc_mock" && \
+	  export $(LINKER_VAR)="$(firstword $(CC))" && \
 	  "@CARGO@" build -j 2 --offline --locked --lib --release --target $(TARGET) \
 	    --manifest-path=./rust/Cargo.toml --target-dir "$(TARGET_DIR)"
 
