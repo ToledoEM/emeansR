@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/ToledoEM/emeansR/graph/badge.svg?token=BCDZNB01SE)](https://app.codecov.io/gh/ToledoEM/emeansR)
 [![pkgdown](https://github.com/ToledoEM/emeansR/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/ToledoEM/emeansR/actions/workflows/pkgdown.yaml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ToledoEM/emeansR/blob/main/LICENSE)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 An R implementation of e-means (Bessa et al., 2026, [arXiv:2611.09501](https://arxiv.org/abs/2611.09501)), a mini-batch replacement for Lloyd's k-means. Each centroid follows an exponential moving average of its mini-batch means, and fitted scaling laws set the batch size and step size, so you only supply the data, `k` and an epoch budget. The paper reports a lower within-cluster sum of squares than 25 Lloyd iterations after a few epochs; the benchmark below shows where that holds.
