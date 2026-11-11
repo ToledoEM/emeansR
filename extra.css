@@ -1,0 +1,14 @@
+/* Logo is 150 px wide everywhere (pkgdown default: 80-120 px). Only the
+   width is set, so the image keeps its aspect ratio and never stretches;
+   the PNG is square, so it renders 150 x 150. */
+body img.logo {
+  width: 150px;
+  height: auto;
+}
+
+/* Make the page header tall enough to hold the 150 px logo, so the
+   header's bottom border runs below it instead of through it
+   (pkgdown default min-height: 88-104 px). */
+body .page-header:has(img.logo) {
+  min-height: calc(150px + 0.5rem + 1px);
+}
