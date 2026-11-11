@@ -1,9 +1,7 @@
 url: https://toledoem.github.io/emeansR/
 destination: docs/
-
 template:
   bootstrap: 5
-
 navbar:
   title: emeansR
   left:
@@ -13,7 +11,6 @@ navbar:
       href: reference/index.html
     - text: Articles
       href: articles/index.html
-
 reference:
   - title: Clustering
     contents:
@@ -26,9 +23,9 @@ reference:
   - title: Package
     contents:
       - emeansR-package
-
 articles:
   - title: Articles
     contents:
       - emeans-vs-lloyd
       - articles/benchmark
+      - articles/single-cell
