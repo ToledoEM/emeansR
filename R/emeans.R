@@ -5,9 +5,11 @@
 
 # Check and coerce to double
 as_data_matrix <- function(x, what = "x") {
-  if (is.data.frame(x)) x <- as.matrix(x)
-  if (!is.matrix(x) || !is.numeric(x)) stop("`", what, "` must be a numeric matrix or data frame", call. = FALSE)
-  if (anyNA(x) || any(!is.finite(x))) stop("`", what, "` contains NA or non-finite values", call. = FALSE)
+  if (inherits(x, "tbl_df") || is.data.frame(x)) x <- as.matrix(x)
+  if (!is.matrix(x) || !is.numeric(x)) {
+    stop("`", what, "` must be a numeric matrix, data frame or tibble", call. = FALSE) # nolint: line_length_linter.
+  }
+  if (anyNA(x) || any(!is.finite(x))) stop("`", what, "` contains NA or non-finite values", call. = FALSE) # nolint: line_length_linter.
   storage.mode(x) <- "double"
   x
 }
@@ -26,9 +28,9 @@ default_threads <- function(n_threads) {
 
 # Warn on non-unit rows
 check_unit_rows <- function(x) {
-  rows <- if (nrow(x) > 1000) x[seq(1, nrow(x), length.out = 1000), , drop = FALSE] else x
+  rows <- if (nrow(x) > 1000) x[seq(1, nrow(x), length.out = 1000), , drop = FALSE] else x # nolint: line_length_linter.
   if (any(abs(rowSums(rows^2) - 1) > 1e-3)) {
-    warning("spherical = TRUE expects unit-norm rows; normalize x first", call. = FALSE)
+    warning("spherical = TRUE expects unit-norm rows; normalize x first", call. = FALSE) # nolint: line_length_linter.
   }
 }
 
@@ -106,7 +108,7 @@ emeans <- function(x, k, nepochs = 5,
   # Matrix k gives centers
   if (is.matrix(k)) {
     init <- as_data_matrix(k, "k")
-    if (ncol(init) != d) stop("initial centers must have ", d, " columns", call. = FALSE)
+    if (ncol(init) != d) stop("initial centers must have ", d, " columns", call. = FALSE) # nolint: line_length_linter.
     k <- nrow(init)
   }
   k <- as.integer(k)
@@ -119,12 +121,12 @@ emeans <- function(x, k, nepochs = 5,
   # Optional training subset
   keep <- NULL
   if (!is.null(max_points_per_centroid)) {
-    if (max_points_per_centroid < 1) stop("max_points_per_centroid must be >= 1", call. = FALSE)
+    if (max_points_per_centroid < 1) stop("max_points_per_centroid must be >= 1", call. = FALSE) # nolint: line_length_linter.
     limit <- floor(max_points_per_centroid) * k  # whole points, as faiss
     if (n > limit) {
       keep <- sort(em_sample(n, limit, seed + 1))
-      if (verbose) message(sprintf("Sampling %d of %d rows (max_points_per_centroid = %d)",
-                                   length(keep), n, as.integer(max_points_per_centroid)))
+      if (verbose) message(sprintf("Sampling %d of %d rows (max_points_per_centroid = %d)", # nolint: line_length_linter.
+                                   length(keep), n, as.integer(max_points_per_centroid))) # nolint: line_length_linter.
     }
   }
   xt <- if (is.null(keep)) x else x[keep, , drop = FALSE]
@@ -132,13 +134,13 @@ emeans <- function(x, k, nepochs = 5,
   if (k > nt) stop("more clusters than training rows", call. = FALSE)
 
   # Recipe and initial centers
-  recipe <- emeans_recipe(nt, k, d, nepochs, batch_law, batch_size, alpha0, unused_threshold)
+  recipe <- emeans_recipe(nt, k, d, nepochs, batch_law, batch_size, alpha0, unused_threshold) # nolint: line_length_linter.
   if (is.null(init)) {
     init <- if (nt == k) xt else xt[em_sample(nt, k, seed), , drop = FALSE]
   }
   if (verbose) {
-    message(sprintf("Clustering %d points in %dD to %d clusters, %g epochs (batch %d, alpha0 %.3g, %s law%s)",
-                    nt, d, k, sum(recipe$epoch_rows) / nt, as.integer(recipe$batch_size), recipe$alpha0,
+    message(sprintf("Clustering %d points in %dD to %d clusters, %g epochs (batch %d, alpha0 %.3g, %s law%s)", # nolint: line_length_linter.
+                    nt, d, k, sum(recipe$epoch_rows) / nt, as.integer(recipe$batch_size), recipe$alpha0, # nolint: line_length_linter.
                     if (is.na(recipe$batch_law)) "given" else recipe$batch_law,
                     if (spherical) ", spherical" else ""))
   }
@@ -159,8 +161,8 @@ emeans <- function(x, k, nepochs = 5,
       while (last_epoch < length(info$obj)) {
         last_epoch <- last_epoch + 1
         message(sprintf("  Epoch %d / %d (%.2f s): objective=%g, splits=%d",
-                        last_epoch, info$n_epochs, proc.time()[["elapsed"]] - start,
-                        info$obj[last_epoch], as.integer(info$nsplit[last_epoch])))
+                        last_epoch, info$n_epochs, proc.time()[["elapsed"]] - start, # nolint: line_length_linter.
+                        info$obj[last_epoch], as.integer(info$nsplit[last_epoch]))) # nolint: line_length_linter.
       }
     }
     if (done) break
@@ -187,14 +189,17 @@ emeans <- function(x, k, nepochs = 5,
 }
 
 # Build kmeans-compatible result
-new_emeans <- function(x, centers, cluster, k, recipe, info, spherical, precision,
-                       dist2 = NULL) {
+new_emeans <- function(
+  x, centers, cluster, k,
+  recipe, info, spherical, precision, dist2 = NULL
+) {
+
   ok <- !is.na(cluster)
   all_rows <- all(ok)
   xs <- if (all_rows) x else x[ok, , drop = FALSE]
   cl <- cluster[ok]
   if (is.null(dist2)) {
-    dist2 <- if (length(cl)) rowSums((xs - centers[cl, , drop = FALSE])^2) else numeric()
+    dist2 <- if (length(cl)) rowSums((xs - centers[cl, , drop = FALSE])^2) else numeric() # nolint: line_length_linter.
   }
   # Withinss from squared distances
   withinss <- numeric(k)
@@ -217,7 +222,7 @@ new_emeans <- function(x, centers, cluster, k, recipe, info, spherical, precisio
       ifault = 0L,
       obj = info$obj,
       iteration_stats = data.frame(epoch = seq_along(info$obj), obj = info$obj,
-                                   imbalance = info$imbalance, nsplit = info$nsplit),
+                                   imbalance = info$imbalance, nsplit = info$nsplit), # nolint: line_length_linter.
       recipe = recipe,
       n_splits = info$n_splits,
       spherical = spherical,
@@ -230,14 +235,14 @@ new_emeans <- function(x, centers, cluster, k, recipe, info, spherical, precisio
 # Print fit summary
 #' @export
 print.emeans <- function(x, ...) {
-  cat(sprintf("e-means clustering with %d clusters of sizes %s\n", nrow(x$centers),
+  cat(sprintf("e-means clustering with %d clusters of sizes %s\n", nrow(x$centers), # nolint: line_length_linter.
               paste(utils::head(x$size, 20), collapse = ", ")),
       if (length(x$size) > 20) "...\n" else "", sep = "")
   cat(sprintf("Epochs: %g (batch %d, alpha0 %.3g), splits: %d%s\n",
               x$recipe$nepochs,
-              as.integer(x$recipe$batch_size), x$recipe$alpha0, as.integer(x$n_splits),
+              as.integer(x$recipe$batch_size), x$recipe$alpha0, as.integer(x$n_splits), # nolint: line_length_linter.
               if (x$spherical) ", spherical" else ""))
-  cat(sprintf("Within cluster sum of squares: %g (between_SS / total_SS = %5.1f %%)\n",
+  cat(sprintf("Within cluster sum of squares: %g (between_SS / total_SS = %5.1f %%)\n", # nolint: line_length_linter.
               x$tot.withinss, 100 * x$betweenss / x$totss))
   cat("Available components:\n")
   print(names(x))
@@ -256,18 +261,22 @@ print.emeans <- function(x, ...) {
 #' @param ... Unused.
 #' @return Integer cluster labels, or a data frame when `distance = TRUE`.
 #' @export
-predict.emeans <- function(object, newdata, distance = FALSE, n_threads = NULL, ...) {
+predict.emeans <- function(
+  object, newdata,
+  distance = FALSE, n_threads = NULL, ...
+) {
+
   # Nearest center per row
   newdata <- as_data_matrix(newdata, "newdata")
   res <- em_assign(object$centers, newdata, object$spherical,
                    object$precision == "single", default_threads(n_threads))
-  if (distance) data.frame(cluster = res$cluster, distance = res$distance) else res$cluster
+  if (distance) data.frame(cluster = res$cluster, distance = res$distance) else res$cluster # nolint: line_length_linter.
 }
 
 # Centers or labels per row
 #' @export
 fitted.emeans <- function(object, method = c("centers", "classes"), ...) {
   method <- match.arg(method)
-  if (is.null(object$cluster)) stop("no cluster labels; use predict()", call. = FALSE)
-  if (method == "centers") object$centers[object$cluster, , drop = FALSE] else object$cluster
+  if (is.null(object$cluster)) stop("no cluster labels; use predict()", call. = FALSE) # nolint: line_length_linter.
+  if (method == "centers") object$centers[object$cluster, , drop = FALSE] else object$cluster # nolint: line_length_linter.
 }

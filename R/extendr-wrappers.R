@@ -8,11 +8,11 @@ em_data <- function(x, single) .Call(wrap__em_data, x, single)
 
 #' Create a training state.
 #' @noRd
-em_new <- function(init, n, spherical, single, batch_size, alpha0, epoch_rows, unused_threshold, seed, n_threads) .Call(wrap__em_new, init, n, spherical, single, batch_size, alpha0, epoch_rows, unused_threshold, seed, n_threads)
+em_new <- function(init, n, spherical, single, batch_size, alpha0, epoch_rows, unused_threshold, seed, n_threads) .Call(wrap__em_new, init, n, spherical, single, batch_size, alpha0, epoch_rows, unused_threshold, seed, n_threads) # nolint: line_length_linter.
 
 #' Run up to `max_steps` updates on in-memory data. TRUE when done.
 #' @noRd
-em_train_steps <- function(st, data, max_steps, capture) .Call(wrap__em_train_steps, st, data, max_steps, capture)
+em_train_steps <- function(st, data, max_steps, capture) .Call(wrap__em_train_steps, st, data, max_steps, capture) # nolint: line_length_linter.
 
 #' Accumulate one chunk of rows into the pending batch; returns 1-based labels.
 #' @noRd
@@ -44,9 +44,8 @@ em_info <- function(st) .Call(wrap__em_info, st)
 
 #' Nearest-centroid assignment for new data.
 #' @noRd
-em_assign <- function(centers, x, spherical, single, n_threads) .Call(wrap__em_assign, centers, x, spherical, single, n_threads)
+em_assign <- function(centers, x, spherical, single, n_threads) .Call(wrap__em_assign, centers, x, spherical, single, n_threads) # nolint: line_length_linter.
 
 #' First `take` entries of a seeded random permutation of 1..n.
 #' @noRd
 em_sample <- function(n, take, seed) .Call(wrap__em_sample, n, take, seed)
-

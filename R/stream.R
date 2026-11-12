@@ -37,14 +37,17 @@ emeans_stream <- function(n, init, nepochs = 5,
   # Create streaming training state
   batch_law <- match.arg(batch_law)
   precision <- match.arg(precision)
-  if (!is.numeric(n) || length(n) != 1 || !is.finite(n) || n < 1 || n != floor(n)) {
+  if (!is.numeric(n) || length(n) != 1 || !is.finite(n) || n < 1 || n != floor(n)) { # nolint: line_length_linter.
     stop("`n` must be a single whole number >= 1", call. = FALSE)
   }
   init <- as_data_matrix(init, "init")
   k <- nrow(init)
   d <- ncol(init)
   if (k > n) stop("more clusters than rows", call. = FALSE)
-  recipe <- emeans_recipe(n, k, d, nepochs, batch_law, batch_size, alpha0, unused_threshold)
+  recipe <- emeans_recipe(
+    n, k, d, nepochs,
+    batch_law, batch_size, alpha0, unused_threshold
+  )
   ptr <- em_new(init, n, spherical, precision == "single", recipe$batch_size,
                 recipe$alpha0, recipe$epoch_rows, recipe$unused_threshold,
                 as.numeric(seed), default_threads(n_threads))
@@ -85,10 +88,15 @@ emeans_accumulate <- function(s, chunk) {
   chunk <- as_data_matrix(chunk, "chunk")
   info <- stream_running(s)
   # Check width and overflow
-  if (ncol(chunk) != s$d) stop(sprintf("chunk has %d columns, model has %d", ncol(chunk), s$d), call. = FALSE)
+  if (ncol(chunk) != s$d) {
+    stop(sprintf("chunk has %d columns, model has %d", ncol(chunk), s$d), call. = FALSE)
+  }
   if (info$pending + nrow(chunk) > info$expected_batch) {
-    stop(sprintf("batch overflow: update expects %d rows, got %d",
-                 as.integer(info$expected_batch), as.integer(info$pending + nrow(chunk))), call. = FALSE)
+    stop(sprintf(
+      "batch overflow: update expects %d rows, got %d",
+      as.integer(info$expected_batch),
+      as.integer(info$pending + nrow(chunk))
+    ), call. = FALSE)
   }
   # Warn once on non-unit rows
   if (s$spherical && !s$unit_checked) {
@@ -102,7 +110,9 @@ emeans_accumulate <- function(s, chunk) {
 stream_running <- function(s) {
   info <- em_info(s$ptr)
   if (info$finalized) stop("stream already finalized", call. = FALSE)
-  if (info$epoch >= info$n_epochs) stop("all epochs are complete; call emeans_finalize()", call. = FALSE)
+  if (info$epoch >= info$n_epochs) {
+    stop("all epochs are complete; call emeans_finalize()", call. = FALSE)
+  }
   info
 }
 
@@ -113,8 +123,11 @@ emeans_update <- function(s) {
   stopifnot(inherits(s, "emeans_stream"))
   info <- stream_running(s)
   if (info$pending != info$expected_batch) {
-    stop(sprintf("update expects a batch of %d rows, accumulated %d",
-                 as.integer(info$expected_batch), as.integer(info$pending)), call. = FALSE)
+    stop(sprintf(
+      "update expects a batch of %d rows, accumulated %d",
+      as.integer(info$expected_batch),
+      as.integer(info$pending)
+    ), call. = FALSE)
   }
   em_update(s$ptr)
   invisible(s)
@@ -128,8 +141,12 @@ emeans_end_epoch <- function(s) {
   info <- stream_running(s)
   rows <- s$recipe$epoch_rows[info$epoch + 1]
   if (info$epoch_done_rows != rows || info$pending != 0) {
-    stop(sprintf("epoch %d expects %d rows, updated %d",
-                 as.integer(info$epoch + 1), as.integer(rows), as.integer(info$epoch_done_rows)), call. = FALSE)
+    stop(sprintf(
+      "epoch %d expects %d rows, updated %d",
+      as.integer(info$epoch + 1),
+      as.integer(rows),
+      as.integer(info$epoch_done_rows)
+    ), call. = FALSE)
   }
   em_end_epoch(s$ptr)
   invisible(s)
@@ -145,7 +162,12 @@ emeans_finalize <- function(s) {
   stopifnot(inherits(s, "emeans_stream"))
   info <- em_info(s$ptr)
   if (!info$finalized && info$epoch < info$n_epochs) {
-    stop("finalize needs all ", as.integer(info$n_epochs), " epochs completed", call. = FALSE)
+    stop(
+      "finalize needs all ",
+      as.integer(info$n_epochs),
+      " epochs completed",
+      call. = FALSE
+    )
   }
   centers <- em_finalize(s$ptr)
   colnames(centers) <- s$colnames
@@ -154,8 +176,12 @@ emeans_finalize <- function(s) {
     list(
       centers = centers,
       obj = info$obj,
-      iteration_stats = data.frame(epoch = seq_along(info$obj), obj = info$obj,
-                                   imbalance = info$imbalance, nsplit = info$nsplit),
+      iteration_stats = data.frame(
+        epoch = seq_along(info$obj),
+        obj = info$obj,
+        imbalance = info$imbalance,
+        nsplit = info$nsplit
+      ),
       recipe = s$recipe,
       n_splits = info$n_splits,
       spherical = s$spherical,
@@ -179,7 +205,11 @@ print.emeans_stream <- function(x, ...) {
 # Print streamed centers
 #' @export
 print.emeans_streamed <- function(x, ...) {
-  cat(sprintf("e-means centers from a stream: %d clusters in %dD, %d epochs, %d splits\n",
-              nrow(x$centers), ncol(x$centers), length(x$obj), as.integer(x$n_splits)))
+  cat(sprintf(
+    "e-means centers from a stream: %d clusters in %dD, %d epochs, %d splits\n",
+    nrow(x$centers),
+    ncol(x$centers),
+    length(x$obj), as.integer(x$n_splits)
+  ))
   invisible(x)
 }
