@@ -1,0 +1,138 @@
+# Authors and Citation
+
+## Authors
+
+- **Enrique Toledo**. Author, maintainer.
+
+- **Authors of the bundled Rust crates**. Contributor, copyright
+  holder.  
+  see inst/AUTHORS
+
+## Citation
+
+Source:
+[`inst/CITATION`](https://github.com/ToledoEM/emeansR/blob/main/inst/CITATION)
+
+Bessa S, Mazaré P-E, Szilvasy G, Touvron H, Picard D, Douze M, Jégou H
+(2026). e-means: outperforming k-means (in one-tenth the epochs).
+arXiv:2611.09501.
+
+    @Misc{,
+      title = {e-means: outperforming k-means (in one-tenth the epochs)},
+      author = {Swann Bessa and Pierre-Emmanuel Mazaré and Gergely Szilvasy and Hugo Touvron and David Picard and Matthijs Douze and Hervé Jégou},
+      year = {2026},
+      eprint = {2611.09501},
+      archiveprefix = {arXiv},
+      primaryclass = {cs.LG},
+      url = {https://arxiv.org/abs/2611.09501},
+    }
+
+## Additional details
+
+    The emeansR package bundles the following Rust crates (src/rust/vendor.tar.xz).
+    Their authors and copyright holders are listed below.
+
+    autocfg 1.5.1
+      Authors: Josh Stone <cuviper@gmail.com>
+      License: Apache-2.0 OR MIT
+      Source: https://github.com/cuviper/autocfg
+
+    crossbeam-deque 0.8.8
+      Authors: The Crossbeam Project Developers
+      License: MIT OR Apache-2.0
+      Source: https://github.com/crossbeam-rs/crossbeam
+
+    crossbeam-epoch 0.9.21
+      Authors: The Crossbeam Project Developers
+      License: MIT OR Apache-2.0
+      Source: https://github.com/crossbeam-rs/crossbeam
+
+    crossbeam-utils 0.8.23
+      Authors: The Crossbeam Project Developers
+      License: MIT OR Apache-2.0
+      Source: https://github.com/crossbeam-rs/crossbeam
+
+    either 1.19.0
+      Authors: bluss (Ulrik Sverdrup) and the either contributors
+      License: MIT OR Apache-2.0
+      Source: https://github.com/rayon-rs/either
+
+    extendr-api 0.9.0
+      Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
+      License: MIT
+      Source: https://github.com/extendr/extendr
+
+    extendr-ffi 0.9.0
+      Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
+      License: MIT
+      Source: https://github.com/extendr/extendr
+
+    extendr-macros 0.9.0
+      Authors: The extendr contributors: Andy Thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia Kosenkov, Daniel Falbel, Genomics PLC
+      License: MIT
+      Source: https://github.com/extendr/extendr
+
+    lazy_static 1.5.1
+      Authors: Marvin Löbel <loebel.marvin@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/rust-lang-nursery/lazy-static.rs
+
+    matrixmultiply 0.3.9
+      Authors: bluss, R. Janis Goldschmidt
+      License: MIT/Apache-2.0
+      Source: https://github.com/bluss/matrixmultiply/
+
+    once_cell 1.21.4
+      Authors: Aleksey Kladov <aleksey.kladov@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/matklad/once_cell
+
+    paste 1.0.15
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/paste
+
+    proc-macro2 1.0.107
+      Authors: David Tolnay <dtolnay@gmail.com>, Alex Crichton <alex@alexcrichton.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/proc-macro2
+
+    quote 1.0.47
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/quote
+
+    rawpointer 0.2.1
+      Authors: bluss
+      License: MIT/Apache-2.0
+      Source: https://github.com/bluss/rawpointer/
+
+    rayon 1.10.0
+      Authors: Niko Matsakis <niko@alum.mit.edu>, Josh Stone <cuviper@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/rayon-rs/rayon
+
+    rayon-core 1.12.1
+      Authors: Niko Matsakis <niko@alum.mit.edu>, Josh Stone <cuviper@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/rayon-rs/rayon
+
+    readonly 0.2.14
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/readonly
+
+    syn 2.0.119
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/syn
+
+    syn 3.0.10
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: MIT OR Apache-2.0
+      Source: https://github.com/dtolnay/syn
+
+    unicode-ident 1.0.27
+      Authors: David Tolnay <dtolnay@gmail.com>
+      License: (MIT OR Apache-2.0) AND Unicode-3.0
+      Source: https://github.com/dtolnay/unicode-ident
