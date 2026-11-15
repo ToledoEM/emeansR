@@ -56,6 +56,14 @@ Median time to a `k`-cluster partition for `emeans()`, `kmeans()`, `hclust()` an
 
 With 256 clusters, `emeans()` is 12 to 26 times faster than `kmeans()` (26 times at n = 500,000) at similar quality. With 20 well-separated clusters it is the fastest method, but `hclust()` and `Mclust()` find better partitions. The [benchmark article](https://toledoem.github.io/emeansR/articles/benchmark.html) has the quality results and caveats.
 
+## MNIST benchmark
+
+Elapsed time against subset size on the raw MNIST pixels (784 columns, up to 70,000 images) for `emeans()` and ten other clustering functions, each on one thread (Apple M2, 3 seeds, 15-minute limit per run).
+
+![Elapsed time against subset size for each method at k = 10, 100 and 1000, log scales](man/figures/README-mnist-benchmark-time.png)
+
+On all 70,000 images, `emeans()` in single precision took 1.2, 1.8 and 8.2 s for 10, 100 and 1,000 clusters, and `kmeans()` with Hartigan-Wong took 18, 69 and 306 s, for almost the same inertia. The [MNIST benchmark article](https://toledoem.github.io/emeansR/articles/mnist-benchmark.html) covers memory, partition quality, UMAPs of the clusters and the centroids as images.
+
 ## Single-cell data
 
 On 73,042 mouse cells from GEO [GSE233163](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE233163) (20 principal components, Apple M2, 7 cores for both methods), Seurat's neighbour graph plus Louvain at 14 resolutions took 84.5 s. `emeans()` at the same 14 cluster counts took 1.1 s, and a five-level bisecting tree (31 clusters) took 0.2 s.
