@@ -40,3 +40,8 @@ Icon?
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+
+# --- Outputs of scripts_vignettes/ (downloaded data and results) ---
+scripts_vignettes/*/out/
+scripts_vignettes/*/out-smoke/
+scripts_vignettes/*/data/

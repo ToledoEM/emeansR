@@ -31,7 +31,7 @@ library(ggraph)
 - Packages: emeansR 0.1.0, Seurat 6.0.0.
 - `emeans()` runs on 7 threads.
 
-A separate script ran the slow steps (embedding, trees, reruns, stability, Louvain) once and saved every result to disk. The chunks below show the code, and the article reads the saved results.
+The [scripts in `scripts_vignettes/single-cell`](https://github.com/ToledoEM/emeansR/tree/main/scripts_vignettes/single-cell) download the GEO files and run the slow steps (embedding, trees, reruns, stability, Louvain) once, saving every result to disk. The chunks below show the code, and the article reads the saved results.
 
 
 

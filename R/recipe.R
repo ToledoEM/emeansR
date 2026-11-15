@@ -96,14 +96,16 @@ emeans_recipe <- function(n, k, d, nepochs = 5,
   }
   # Default revival threshold
   if (is.null(unused_threshold)) {
-    unused_threshold <- if (d <= .no_revival_max_d) 0 else .unused_threshold_default
+    unused_threshold <- if (d <= .no_revival_max_d) 0 else .unused_threshold_default # nolint: line_length_linter.
   } else {
     stopifnot(unused_threshold >= 0)
   }
   # Rows and steps per epoch
   rows <- epoch_rows(n, nepochs)
   steps <- ceiling(rows / batch_size)
-  if (sum(steps) == 0) stop("nepochs too small: no rows to train on", call. = FALSE)
+  if (sum(steps) == 0) {
+    stop("nepochs too small: no rows to train on", call. = FALSE)
+  }
   list(
     batch_size = batch_size,
     alpha0 = as.numeric(alpha0),
