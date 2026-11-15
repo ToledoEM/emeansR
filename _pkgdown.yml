@@ -10,7 +10,18 @@ navbar:
     - text: Reference
       href: reference/index.html
     - text: Articles
-      href: articles/index.html
+      menu:
+        - text: e-means vs. Lloyd k-means
+          href: articles/emeans-vs-lloyd.html
+        - text: Speed vs. other clustering tools
+          href: articles/benchmark.html
+        - text: A resolution tree for single-cell data
+          href: articles/single-cell.html
+        - text: Benchmark on MNIST
+          href: articles/mnist-benchmark.html
+        - text: -------
+        - text: All articles
+          href: articles/index.html
 reference:
   - title: Clustering
     contents:
@@ -29,3 +40,4 @@ articles:
       - emeans-vs-lloyd
       - articles/benchmark
       - articles/single-cell
+      - articles/mnist-benchmark
